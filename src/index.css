@@ -12,6 +12,13 @@ body {
   color: #f9fafb;
   font-family: system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-touch-callout: default;
+  user-select: text;
 }
 
 #root {
