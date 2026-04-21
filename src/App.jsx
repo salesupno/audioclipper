@@ -97,30 +97,6 @@ export default function App() {
             crop={crop}
           />
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Crop</span>
-            <button
-              onClick={() => setCrop({ start: playhead.currentTime, end: crop?.end ?? playhead.duration })}
-              className="min-h-[44px] px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm transition-colors"
-            >
-              ← Set start
-            </button>
-            <button
-              onClick={() => setCrop({ start: crop?.start ?? 0, end: playhead.currentTime })}
-              className="min-h-[44px] px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm transition-colors"
-            >
-              Set end →
-            </button>
-            {crop && (
-              <button
-                onClick={() => setCrop(null)}
-                className="text-xs text-amber-500 dark:text-amber-400 hover:text-amber-400 dark:hover:text-amber-300 underline ml-auto transition-colors"
-              >
-                Undo crop
-              </button>
-            )}
-          </div>
-
           <RegionList
             regions={regions}
             onRemove={handleRemove}
