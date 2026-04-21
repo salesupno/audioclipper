@@ -70,6 +70,23 @@ export default function RegionItem({ region, onRemove, onUpdate, onPlay, onSetEn
           className="flex-1 min-h-[44px] accent-indigo-500"
         />
       </div>
+
+      {/* Gain level bar */}
+      <div className="relative h-2 rounded-full overflow-hidden bg-gray-700">
+        <div className="absolute inset-y-0 left-1/2 w-px bg-gray-500" />
+        {region.gain > 0 && (
+          <div
+            className="absolute top-0 h-full bg-green-500 rounded-r-full"
+            style={{ left: '50%', width: `${(region.gain / 20) * 50}%` }}
+          />
+        )}
+        {region.gain < 0 && (
+          <div
+            className="absolute top-0 h-full bg-red-500 rounded-l-full"
+            style={{ right: '50%', width: `${(Math.abs(region.gain) / 20) * 50}%` }}
+          />
+        )}
+      </div>
     </div>
   );
 }

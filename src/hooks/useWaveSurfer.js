@@ -17,6 +17,9 @@ export function useWaveSurfer(containerRef) {
   const regionsRef = useRef(null);
   const regionStartsRef = useRef({});
   const isRestoringRef = useRef(false);
+  const analyserRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const sourceNodeRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -28,6 +31,10 @@ export function useWaveSurfer(containerRef) {
   const init = useCallback((audioUrl) => {
     if (wsRef.current) {
       wsRef.current.destroy();
+      if (sourceNodeRef.current) {
+        sourceNodeRef.current.disconnect();
+        sourceNodeRef.current = null;
+      }
     }
 
     const regionsPlugin = RegionsPlugin.create();
@@ -55,11 +62,28 @@ export function useWaveSurfer(containerRef) {
       setDuration(ws.getDuration());
       setCurrentTime(0);
       setZoom(0);
+
+      // Set up Web Audio analyser for VU meter
+      try {
+        if (!audioCtxRef.current) {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 512;
+          analyser.connect(ctx.destination);
+          audioCtxRef.current = ctx;
+          analyserRef.current = analyser;
+        }
+        const source = audioCtxRef.current.createMediaElementSource(ws.getMediaElement());
+        source.connect(analyserRef.current);
+        sourceNodeRef.current = source;
+      } catch (_) {
+        // Web Audio API not available
+      }
     });
 
     ws.on('timeupdate', (t) => setCurrentTime(t));
 
-    ws.on('play', () => setPlaying(true));
+    ws.on('play', () => { setPlaying(true); audioCtxRef.current?.resume(); });
     ws.on('pause', () => setPlaying(false));
     ws.on('finish', () => setPlaying(false));
 
@@ -209,6 +233,10 @@ export function useWaveSurfer(containerRef) {
   const destroy = useCallback(() => {
     wsRef.current?.destroy();
     wsRef.current = null;
+    if (sourceNodeRef.current) {
+      sourceNodeRef.current.disconnect();
+      sourceNodeRef.current = null;
+    }
     setReady(false);
     setRegions([]);
     setDuration(0);
@@ -218,8 +246,13 @@ export function useWaveSurfer(containerRef) {
   useEffect(() => {
     return () => {
       wsRef.current?.destroy();
+      if (sourceNodeRef.current) {
+        sourceNodeRef.current.disconnect();
+        sourceNodeRef.current = null;
+      }
+      audioCtxRef.current?.close();
     };
   }, []);
 
-  return { init, ready, playing, currentTime, duration, zoom, regions, addRegion, addRegions, removeRegion, setRegionEnd, updateRegionMeta, togglePlay, playRegion, setZoomLevel, setZoomToSeconds, zoomToRegion, getDecodedData, destroy };
+  return { init, ready, playing, currentTime, duration, zoom, regions, addRegion, addRegions, removeRegion, setRegionEnd, updateRegionMeta, togglePlay, playRegion, setZoomLevel, setZoomToSeconds, zoomToRegion, getDecodedData, destroy, analyserRef };
 }

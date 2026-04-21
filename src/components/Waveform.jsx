@@ -14,8 +14,10 @@ const ZOOM_LEVELS = [
 
 export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpdate, crop }) {
   const containerRef = useRef(null);
+  const meterFillRef = useRef(null);
+  const animFrameRef = useRef(null);
   const [zoomSeconds, setZoomSeconds] = useState(0);
-  const { init, ready, playing, currentTime, duration, regions, addRegion, addRegions, removeRegion, setRegionEnd, updateRegionMeta, togglePlay, playRegion, setZoomToSeconds, zoomToRegion, getDecodedData, destroy } = useWaveSurfer(containerRef);
+  const { init, ready, playing, currentTime, duration, regions, addRegion, addRegions, removeRegion, setRegionEnd, updateRegionMeta, togglePlay, playRegion, setZoomToSeconds, zoomToRegion, getDecodedData, destroy, analyserRef } = useWaveSurfer(containerRef);
 
   useEffect(() => {
     onTimeUpdate?.({ currentTime, duration });
@@ -37,6 +39,36 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
   useEffect(() => {
     onRegionsChange?.({ regions, removeRegion, setRegionEnd, updateRegionMeta, playRegion, zoomToRegion });
   }, [regions]);
+
+  // VU meter animation loop
+  useEffect(() => {
+    if (!playing || !analyserRef.current) {
+      if (meterFillRef.current) meterFillRef.current.style.width = '0%';
+      return;
+    }
+    const analyser = analyserRef.current;
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    let smoothLevel = 0;
+    function tick() {
+      analyser.getByteTimeDomainData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        const s = (dataArray[i] - 128) / 128;
+        sum += s * s;
+      }
+      const rms = Math.sqrt(sum / dataArray.length);
+      const dB = 20 * Math.log10(rms + 1e-9);
+      const pct = Math.max(0, Math.min(100, ((dB + 60) / 60) * 100));
+      smoothLevel = pct > smoothLevel ? pct * 0.8 + smoothLevel * 0.2 : pct * 0.05 + smoothLevel * 0.95;
+      if (meterFillRef.current) meterFillRef.current.style.width = `${smoothLevel}%`;
+      animFrameRef.current = requestAnimationFrame(tick);
+    }
+    animFrameRef.current = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+      if (meterFillRef.current) meterFillRef.current.style.width = '0%';
+    };
+  }, [playing]);
 
   useEffect(() => {
     if (!ready) return;
@@ -83,6 +115,16 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
         <div className="flex items-center justify-between text-xs text-gray-400 px-1">
           <span className="font-mono text-base text-white tabular-nums">{formatTime(currentTime)}</span>
           <span className="font-mono">{formatTime(duration)}</span>
+        </div>
+      )}
+
+      {ready && (
+        <div className="h-2 rounded-full overflow-hidden bg-gray-700" title="Lydnivå">
+          <div
+            ref={meterFillRef}
+            style={{ width: '0%', background: 'linear-gradient(to right, #22c55e 0%, #eab308 65%, #ef4444 100%)' }}
+            className="h-full"
+          />
         </div>
       )}
 
