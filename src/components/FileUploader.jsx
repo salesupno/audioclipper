@@ -14,16 +14,16 @@ export default function FileUploader({ onFile }) {
 
   return (
     <div
-      className="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 active:border-indigo-400 transition-colors"
+      className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 active:border-indigo-400 transition-colors"
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onClick={() => document.getElementById('file-input').click()}
     >
-      <p className="text-gray-400 text-lg mb-2">
+      <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
         <span className="hidden sm:inline">Dra lydfil hit, eller trykk for å velge</span>
         <span className="sm:hidden">Trykk for å velge lydfil</span>
       </p>
-      <p className="text-gray-600 text-sm">MP3, WAV, M4A, AAC, AIFF, OGG, FLAC</p>
+      <p className="text-gray-400 dark:text-gray-600 text-sm">MP3, WAV, M4A, AAC, AIFF, OGG, FLAC</p>
       <input
         id="file-input"
         type="file"

@@ -86,7 +86,7 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        <div ref={containerRef} className="rounded-lg overflow-hidden bg-gray-900" />
+        <div ref={containerRef} className="rounded-lg overflow-hidden bg-white dark:bg-gray-900" />
         {ready && crop && duration > 0 && (
           <>
             {crop.start > 0 && (
@@ -104,7 +104,7 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
           </>
         )}
         {!ready && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-lg" style={{ minHeight: 80 }}>
+          <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-900 rounded-lg" style={{ minHeight: 80 }}>
             <span className="inline-block w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin mr-3" />
             <span className="text-gray-400 text-sm">Loading waveform…</span>
           </div>
@@ -112,14 +112,14 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
       </div>
 
       {ready && (
-        <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-          <span className="font-mono text-base text-white tabular-nums">{formatTime(currentTime)}</span>
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
+          <span className="font-mono text-base text-gray-900 dark:text-white tabular-nums">{formatTime(currentTime)}</span>
           <span className="font-mono">{formatTime(duration)}</span>
         </div>
       )}
 
       {ready && (
-        <div className="h-2 rounded-full overflow-hidden bg-gray-700" title="Lydnivå">
+        <div className="h-2 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700" title="Lydnivå">
           <div
             ref={meterFillRef}
             style={{ width: '0%', background: 'linear-gradient(to right, #22c55e 0%, #eab308 65%, #ef4444 100%)' }}
@@ -132,14 +132,14 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
         <button
           onClick={togglePlay}
           disabled={!ready}
-          className="min-w-[44px] min-h-[44px] px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 font-medium transition-colors"
+          className="min-w-[44px] min-h-[44px] px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 font-medium text-white transition-colors"
         >
           {playing ? 'Pause' : 'Spill av'}
         </button>
         <button
           onClick={addRegion}
           disabled={!ready}
-          className="min-w-[44px] min-h-[44px] px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-40 font-medium transition-colors"
+          className="min-w-[44px] min-h-[44px] px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-40 font-medium text-gray-900 dark:text-white transition-colors"
         >
           + Legg til klipp
         </button>
@@ -153,7 +153,7 @@ export default function Waveform({ audioUrl, onReady, onRegionsChange, onTimeUpd
                 setZoomSeconds(secs);
                 setZoomToSeconds(secs);
               }}
-              className="min-h-[44px] px-3 rounded-lg bg-gray-700 text-white text-sm border border-gray-600 focus:outline-none focus:border-indigo-500"
+              className="min-h-[44px] px-3 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-indigo-500"
             >
               {ZOOM_LEVELS.map(({ label, seconds }) => (
                 <option key={seconds} value={seconds}>{label}</option>

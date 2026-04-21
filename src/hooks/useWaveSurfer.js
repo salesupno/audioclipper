@@ -48,7 +48,7 @@ export function useWaveSurfer(containerRef) {
       container: containerRef.current,
       waveColor: '#4b5563',
       progressColor: '#6366f1',
-      cursorColor: '#f9fafb',
+      cursorColor: '#6366f1',
       barWidth: 2,
       barGap: 1,
       height: 80,

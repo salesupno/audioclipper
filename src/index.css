@@ -8,12 +8,16 @@
 
 body {
   margin: 0;
-  background: #111827;
-  color: #f9fafb;
+  background: #f3f4f6;
+  color: #111827;
   font-family: system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-touch-callout: none;
   user-select: none;
+}
+html.dark body {
+  background: #111827;
+  color: #f9fafb;
 }
 
 input, textarea {

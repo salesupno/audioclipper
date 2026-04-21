@@ -67,15 +67,15 @@ export default function ExportPanel({ regions, crop, audioFile, exportClip, ffmp
   const disabled = !ffmpegReady || processing || visibleRegions.length === 0;
 
   return (
-    <div className="bg-gray-800 rounded-xl p-5 flex flex-col gap-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 flex flex-col gap-4">
       <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-sm text-gray-400">Format:</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">Format:</span>
         {['mp3', 'wav'].map((f) => (
           <button
             key={f}
             onClick={() => setFormat(f)}
             className={`min-h-[44px] px-5 rounded-lg text-sm font-medium transition-colors ${
-              format === f ? 'bg-indigo-600' : 'bg-gray-700 hover:bg-gray-600'
+              format === f ? 'bg-indigo-600 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white'
             }`}
           >
             {f.toUpperCase()}
@@ -84,13 +84,13 @@ export default function ExportPanel({ regions, crop, audioFile, exportClip, ffmp
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm text-gray-400">Quality:</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">Quality:</span>
         {QUALITY_OPTIONS[format].map(({ value, label, desc }) => (
           <button
             key={value}
             onClick={() => setQuality(value)}
             className={`min-h-[44px] px-4 rounded-lg text-sm transition-colors flex flex-col items-center leading-tight py-1 ${
-              quality === value ? 'bg-indigo-600' : 'bg-gray-700 hover:bg-gray-600'
+              quality === value ? 'bg-indigo-600 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white'
             }`}
           >
             <span className="font-medium">{label}</span>
