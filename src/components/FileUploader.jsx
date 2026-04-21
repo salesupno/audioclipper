@@ -28,7 +28,7 @@ export default function FileUploader({ onFile }) {
         id="file-input"
         type="file"
         accept={ACCEPTED}
-        className="hidden"
+        className="absolute opacity-0 w-0 h-0 pointer-events-none"
         onChange={handleChange}
       />
     </label>
